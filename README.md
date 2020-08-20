@@ -1,5 +1,3 @@
-# ARM Templates for Azure Resources 
-
 # GitHub Action for Azure Resource Manager (ARM) deployment
 
 A GitHub Action to deploy ARM templates. With this action you can automate your workflow to deploy ARM templates and manage Azure resources.
@@ -21,13 +19,11 @@ A GitHub Action to deploy ARM templates. With this action you can automate your 
 * `deploymentMode`: `Incremental`(default) (only add resources to resource group) or `Complete` (remove extra resources from resource group) or `Validate`
 * `deploymentName` Specifies the name of the resource group deployment to create.
 * `parameters` Supply deployment parameter values or local as well as remote value files.   
-  (See also [examples/Advanced.md](examples/Advanced.md))
 
 
 
 ## Outputs
-Every template output will be exported as output. For example the output is called `containerName` then it will be available with `${{ steps.STEP.outputs.containerName }}`    
-For more Information see [examples/Advanced.md](examples/Advanced.md).    
+Every template output will be exported as output. 
 
 ## Usage
 
@@ -62,4 +58,55 @@ jobs:
         templateLocation: ./azuredeploy.json
         parameters: storageAccountType=Standard_LRS
 ```
-For more advanced workflows see [examples/Advanced.md](examples/Advanced.md).
+
+## Another example on how to use this Action to use get the output of ARM template
+In this exmaple, our template outputs `containerName`.
+
+## Steps
+```yaml
+- uses: azure/ARM@v1
+  id: deploy
+  with:
+    scope: resourcegroup
+    subscriptionId: e1046c08-7072-****-****-************
+    resourceGroupName: azurearmaction
+    templateLocation: examples/template/template.json
+    parameters: examples/template/parameters.json
+    deploymentName: github-advanced-test
+```
+Here we see a normal use of the Action, we pass the template as json file as well as the parameters. If we look into the `template.json` File we can see at the very bottom the defined outputs:
+```json
+{
+  ...
+  "outputs": {
+    ...
+    "containerName": {
+      "type": "string",
+      "value": "[parameters('containerName')]"
+    }
+  }
+}
+```
+And we know our Action writes this output(s) to an action output variable with the same name, we can access it using `${{ steps.deploy.outputs.containerName }}` (Note: `deploy` comes from the `id` field from above.)   
+
+If we now add a Shell script with a simple echo from that value, we can see that on the console the containername to be printed.
+
+```yaml
+- run: echo ${{ steps.deploy.outputs.containerName }}
+```
+
+# Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+
