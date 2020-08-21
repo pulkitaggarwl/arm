@@ -10,9 +10,9 @@ A GitHub Action to deploy ARM templates. With this action you can automate your 
 
 ## Inputs
 
-* `scope`: **Required** Provide the scope of the deployment. Valid values are: `resourcegroup`(default), `managementgroup`, `subscription`.
-* `subscriptionId`: **Required** Provide the Id of the subscription which should be used.
+* `scope`: **Required** Provide the scope of the deployment. Valid values are: `resourcegroup`(default) , `subscription`, `managementgroup`.
 * `templateLocation`: **Required** Specify the path or URL to the Azure Resource Manager template.
+* `subscriptionId`: Provide the Id of the subscription which should be used.Only required for scope `resourcegroup` & `subscription`. 
 * `resourceGroupName`: Provide the name of a resource group. Only required for Resource Group Scope
 * `location`: Provide the target region, only required for Management Group or Subscription deployments.
 
